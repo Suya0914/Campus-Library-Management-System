@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>图书查询 - 薄荷图书馆</title><link rel="stylesheet" href="css/common.css"></head>
+<body>
+<nav class="navbar">
+    <div class="logo">📖 薄荷<span>图书馆</span></div>
+    <div class="nav-links">
+        <a href="index.html">首页</a><a href="addBook.html">图书入库</a><a href="outBook.html">图书出库</a>
+        <a href="searchBook.html" class="active">图书查询</a><a href="borrowBook.html">借书</a><a href="returnBook.html">还书</a>
+        <a href="stockBooks.html">查看库存</a><a href="listReaders.html">查看读者</a><a href="addReader.html">新增读者</a>
+        <a href="login.html" id="navLogin">登录</a><a href="#" id="navLogout" style="display:none;" onclick="handleLogout()">退出</a>
+    </div>
+</nav>
+<div class="main-container">
+    <div class="card" style="max-width:560px;margin:0 auto 30px;">
+        <div class="card-title">🔍 关键词模糊查询图书</div>
+        <form id="searchForm" onsubmit="return false;">
+            <div class="form-group"><label for="keyword">关键词（书名、作者或ISBN）</label><input type="text" id="keyword" placeholder="请输入查询关键词" required></div>
+            <div class="btn-group"><button type="submit" class="btn btn-primary" onclick="submitSearch()">查询</button><button type="reset" class="btn btn-secondary">重置</button></div>
+        </form>
+    </div>
+    <div class="card">
+        <div class="card-title" id="resultTitle">查询结果</div>
+        <div id="resultArea"><div class="empty-tip">请输入关键词进行查询</div></div>
+    </div>
+</div>
+<div class="footer"><p>© 2026 薄荷图书馆 · 图书管理系统</p></div>
+<script src="js/request.js"></script>
+<script>
+async function submitSearch(){
+    const kw=document.getElementById('keyword').value.trim();
+    if(!kw){showMessage('messageBox','请输入查询关键词',false);return;}
+    const r=await API.searchBooks({keyword:kw});
+    const ra=document.getElementById('resultArea');
+    if(r.success&&r.data&&r.data.length>0){
+        let h='<div class="table-wrapper"><table><thead><tr><th>书名</th><th>作者</th><th>ISBN</th><th>库存</th></tr></thead><tbody>';
+        r.data.forEach(b=>{h+='<tr><td>'+b.title+'</td><td>'+b.author+'</td><td>'+b.isbn+'</td><td>'+b.stockQuantity+'</td></tr>';});
+        h+='</tbody></table></div>';ra.innerHTML=h;document.getElementById('resultTitle').textContent='查询结果:';
+    }else{ra.innerHTML='<div class="empty-tip">未找到匹配的图书</div>';document.getElementById('resultTitle').textContent='查询结果';}
+}
+updateNavAuth();
+</script>
+</body></html>

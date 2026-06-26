@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>新增读者 - 薄荷图书馆</title><link rel="stylesheet" href="css/common.css"></head>
+<body>
+<nav class="navbar">
+    <div class="logo">📖 薄荷<span>图书馆</span></div>
+    <div class="nav-links">
+        <a href="index.html">首页</a><a href="addBook.html">图书入库</a><a href="outBook.html">图书出库</a>
+        <a href="searchBook.html">图书查询</a><a href="borrowBook.html">借书</a><a href="returnBook.html">还书</a>
+        <a href="stockBooks.html">查看库存</a><a href="listReaders.html">查看读者</a><a href="addReader.html" class="active">新增读者</a>
+        <a href="login.html" id="navLogin">登录</a><a href="#" id="navLogout" style="display:none;" onclick="handleLogout()">退出</a>
+    </div>
+</nav>
+<div class="main-container">
+    <div class="card" style="max-width:560px;margin:0 auto;">
+        <div class="card-title">👤 新增读者</div>
+        <form id="addReaderForm" onsubmit="return false;">
+            <div class="form-group"><label for="name">读者姓名</label><input type="text" id="name" placeholder="请输入读者姓名" required></div>
+            <div class="form-group"><label for="cardNumber">借阅证号</label><input type="text" id="cardNumber" placeholder="请输入借阅证号" required></div>
+            <div class="btn-group"><button type="submit" class="btn btn-primary" onclick="submitAddReader()">确认添加</button><button type="reset" class="btn btn-secondary">重置</button></div>
+        </form>
+        <div id="messageBox" class="message-box"></div>
+    </div>
+</div>
+<div class="footer"><p>© 2026 薄荷图书馆 · 图书管理系统</p></div>
+<script src="js/request.js"></script>
+<script>
+async function submitAddReader(){
+    const d={name:document.getElementById('name').value.trim(),cardNumber:document.getElementById('cardNumber').value.trim()};
+    if(!d.name||!d.cardNumber){showMessage('messageBox','请完整填写姓名和借阅证号',false);return;}
+    const r=await API.addReader(d);showMessage('messageBox',r.message,r.success);if(r.success)document.getElementById('addReaderForm').reset();
+}
+updateNavAuth();
+</script>
+</body></html>

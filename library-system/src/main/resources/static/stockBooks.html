@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>库存图书 - 薄荷图书馆</title><link rel="stylesheet" href="css/common.css"></head>
+<body>
+<nav class="navbar">
+    <div class="logo">📖 薄荷<span>图书馆</span></div>
+    <div class="nav-links">
+        <a href="index.html">首页</a><a href="addBook.html">图书入库</a><a href="outBook.html">图书出库</a>
+        <a href="searchBook.html">图书查询</a><a href="borrowBook.html">借书</a><a href="returnBook.html">还书</a>
+        <a href="stockBooks.html" class="active">查看库存</a><a href="listReaders.html">查看读者</a><a href="addReader.html">新增读者</a>
+        <a href="login.html" id="navLogin">登录</a><a href="#" id="navLogout" style="display:none;" onclick="handleLogout()">退出</a>
+    </div>
+</nav>
+<div class="main-container">
+    <div class="card">
+        <div class="card-title">📋 当前库存图书</div>
+        <div id="bookList"><div class="empty-tip">加载中...</div></div>
+    </div>
+</div>
+<div class="footer"><p>© 2026 薄荷图书馆 · 图书管理系统</p></div>
+<script src="js/request.js"></script>
+<script>
+async function load(){
+    const r=await API.listBooks();const c=document.getElementById('bookList');
+    if(r.success&&r.data&&r.data.length>0){
+        let h='<div class="table-wrapper"><table><thead><tr><th>书名</th><th>作者</th><th>出版社</th><th>ISBN</th><th>库存</th></tr></thead><tbody>';
+        r.data.forEach(b=>{h+='<tr><td>'+b.title+'</td><td>'+b.author+'</td><td>'+b.publisher+'</td><td>'+b.isbn+'</td><td>'+b.stockQuantity+'</td></tr>';});
+        h+='</tbody></table></div>';c.innerHTML=h;
+    }else{c.innerHTML='<div class="empty-tip">暂无库存图书</div>';}
+}
+load();updateNavAuth();
+</script>
+</body></html>

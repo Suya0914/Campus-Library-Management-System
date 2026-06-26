@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>首页 - 薄荷图书馆</title>
+<link rel="stylesheet" href="css/common.css">
+<style>
+/* ============================================================
+   左侧侧边栏（常驻导航栏下方）
+   风格与 common.css 的薄荷绿主题保持一致
+   ============================================================ */
+
+/* ---- 侧边栏（默认收缩状态：只显示图标） ---- */
+.sidebar {
+    position: fixed; top: 60px; left: 0;
+    height: calc(100vh - 60px); width: 56px;
+    z-index: 90; background: #fff; overflow: hidden;
+    border-right: 1px solid rgba(126,200,182,0.18);
+    box-shadow: 2px 0 14px rgba(126,200,182,0.08);
+    transition: width 0.28s ease;
+    display: flex; flex-direction: column;
+}
+.sidebar.expanded { width: 200px; }
+
+/* ---- 侧边栏导航列表 ---- */
+.sidebar-inner {
+    flex: 1; overflow-y: auto; padding: 10px 0;
+    display: flex; flex-direction: column; gap: 2px;
+}
+.sidebar-inner a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 0; margin: 0 10px;
+    color: #3a5a5a; text-decoration: none;
+    border-radius: 10px; transition: all 0.2s ease;
+    white-space: nowrap; overflow: hidden;
+    font-size: 14px; justify-content: center;
+}
+.sidebar.expanded .sidebar-inner a {
+    justify-content: flex-start; padding: 11px 14px;
+}
+.sidebar-inner a:hover {
+    background: #eef8f5; color: #2d5a5a;
+}
+.sidebar-inner a .icon {
+    font-size: 18px; width: 24px; text-align: center;
+    flex-shrink: 0; line-height: 1;
+}
+.sidebar-inner a .label {
+    font-size: 13.5px;
+    opacity: 0; width: 0; overflow: hidden;
+    transition: opacity 0.2s ease 0.05s;
+}
+.sidebar.expanded .sidebar-inner a .label {
+    opacity: 1; width: auto; overflow: visible;
+}
+.sidebar-inner a.active {
+    background: #e8f5f2; color: #3a7a6a; font-weight: 500;
+}
+/* 分隔线 */
+.sidebar-sep {
+    height: 1px; background: #e8f5f2; margin: 6px 14px; flex-shrink: 0;
+}
+
+/* ---- 展开/收缩切换按钮（侧边栏右侧正中间） ---- */
+.sidebar-toggle {
+    position: absolute; top: 50%; right: -14px;
+    transform: translateY(-50%);
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #fff; border: 1.5px solid rgba(126,200,182,0.3);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: #7EC8B6; font-size: 11px; line-height: 1;
+    box-shadow: 0 2px 6px rgba(126,200,182,0.15);
+    z-index: 1; transition: all 0.2s ease; padding: 0;
+}
+.sidebar-toggle:hover {
+    background: #f0fbf8; border-color: #7EC8B6;
+    box-shadow: 0 3px 10px rgba(126,200,182,0.25);
+}
+
+/* ---- 主内容区域联动偏移 ---- */
+.content-wrapper {
+    margin-left: 56px;          /* 留给收缩状态侧边栏 */
+    transition: margin-left 0.28s ease;
+    min-height: calc(100vh - 60px);
+    display: flex; flex-direction: column;
+}
+.content-wrapper.sidebar-expanded {
+    margin-left: 200px;         /* 展开状态侧边栏 */
+}
+
+/* ---- 响应式 ---- */
+@media(max-width:768px){
+    .navbar { flex-direction: row !important; height: 60px; padding: 0 16px !important; }
+    .sidebar { width: 50px; }
+    .sidebar.expanded { width: 190px; }
+    .content-wrapper { margin-left: 50px; }
+    .content-wrapper.sidebar-expanded { margin-left: 190px; }
+    .sidebar-inner a { margin: 0 6px; padding: 9px 0; }
+    .sidebar.expanded .sidebar-inner a { padding: 9px 10px; }
+    .sidebar-inner a .icon { font-size: 16px; width: 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 导航栏（仅首页 + 登录/退出） ===== -->
+<nav class="navbar">
+    <div class="logo">📖 薄荷<span>图书馆</span></div>
+    <div class="nav-links">
+        <a href="index.html" class="active">首页</a>
+        <a href="login.html" id="navLogin">登录</a>
+        <a href="#" id="navLogout" style="display:none;" onclick="handleLogout()">退出</a>
+    </div>
+</nav>
+
+<!-- ===== 左侧侧边栏（常驻，默认收缩） ===== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+        <a href="addBook.html"><span class="icon">📥</span><span class="label">图书入库</span></a>
+        <a href="outBook.html"><span class="icon">📤</span><span class="label">图书出库</span></a>
+        <a href="searchBook.html"><span class="icon">🔍</span><span class="label">图书查询</span></a>
+        <a href="borrowBook.html"><span class="icon">📖</span><span class="label">借书</span></a>
+        <a href="returnBook.html"><span class="icon">🔄</span><span class="label">还书</span></a>
+        <div class="sidebar-sep"></div>
+        <a href="stockBooks.html"><span class="icon">📋</span><span class="label">查看库存</span></a>
+        <a href="listReaders.html"><span class="icon">👥</span><span class="label">查看读者</span></a>
+        <a href="addReader.html"><span class="icon">👤</span><span class="label">新增读者</span></a>
+    </div>
+    <!-- 展开/收缩切换按钮（侧边栏右侧正中间） -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebarMode()" title="展开菜单">
+        <span id="toggleArrow">▶</span>
+    </button>
+</aside>
+
+<!-- ===== 页面主内容 ===== -->
+<div class="content-wrapper" id="contentWrapper">
+    <div class="main-container">
+        <div class="welcome-section"><h1>🌿 欢迎来到薄荷图书馆</h1><p>在书页间，遇见更广阔的世界</p></div>
+        <div class="carousel">
+            <div class="carousel-slides">
+                <div class="carousel-slide active"><span class="icon">📚</span><h2>图书管理系统</h2><p>高效管理馆藏，轻松借阅归还</p></div>
+                <div class="carousel-slide"><span class="icon">📖</span><h2>阅读，遇见更好的自己</h2><p>每本书都是一扇通往新世界的门</p></div>
+                <div class="carousel-slide"><span class="icon">🏷️</span><h2>知识就是力量</h2><p>不断学习，持续成长</p></div>
+            </div>
+            <button class="carousel-btn prev" onclick="changeSlide(-1)">‹</button>
+            <button class="carousel-btn next" onclick="changeSlide(1)">›</button>
+            <div class="carousel-dots"><span class="active" onclick="goToSlide(0)"></span><span onclick="goToSlide(1)"></span><span onclick="goToSlide(2)"></span></div>
+        </div>
+        <div class="section-title">📌 快捷功能</div>
+        <div class="book-grid">
+            <div class="book-card" onclick="location.href='addBook.html'" style="cursor:pointer;"><div class="book-cover">📥</div><h4>图书入库</h4><p>新增图书到馆藏</p></div>
+            <div class="book-card" onclick="location.href='borrowBook.html'" style="cursor:pointer;"><div class="book-cover">📤</div><h4>读者借书</h4><p>为读者办理借阅</p></div>
+            <div class="book-card" onclick="location.href='returnBook.html'" style="cursor:pointer;"><div class="book-cover">🔄</div><h4>读者还书</h4><p>办理图书归还</p></div>
+            <div class="book-card" onclick="location.href='stockBooks.html'" style="cursor:pointer;"><div class="book-cover">📋</div><h4>查看库存</h4><p>浏览全部馆藏图书</p></div>
+        </div>
+        <div class="section-title">📖 馆藏图书</div>
+        <div class="book-grid" id="bookDisplay"></div>
+    </div>
+    <div class="footer"><p>© 2026 薄荷图书馆 · 图书管理系统 · 阅读让生活更美好</p></div>
+</div>
+
+<script src="js/request.js"></script>
+<script>
+/* ======== 原有功能（轮播 + 图书列表）保持不变 ======== */
+let cs=0;const sl=document.querySelectorAll('.carousel-slide'),dt=document.querySelectorAll('.carousel-dots span');
+function si(i){sl.forEach((s,idx)=>s.classList.toggle('active',idx===i));dt.forEach((d,idx)=>d.classList.toggle('active',idx===i));cs=i;}
+function cd(d){let n=cs+d;if(n<0)n=sl.length-1;if(n>=sl.length)n=0;si(n);}
+function gs(i){si(i);}
+setInterval(()=>cd(1),4000);
+async function lb(){const r=await API.listBooks();const c=document.getElementById('bookDisplay');
+if(r.success&&r.data&&r.data.length>0){c.innerHTML=r.data.map(b=>'<div class="book-card"><div class="book-cover">📕</div><h4>'+b.title+'</h4><p>作者: '+b.author+'<br>出版社: '+b.publisher+'<br>ISBN: '+b.isbn+'<br>库存: '+b.stockQuantity+' 册</p></div>').join('');}
+else{c.innerHTML='<div class="empty-tip">暂无馆藏图书</div>';}}
+lb();updateNavAuth();
+
+/* ======== ★ 侧边栏展开/收缩切换（由右侧正中间的按钮触发） ======== */
+var sidebarExpanded = false;
+
+function toggleSidebarMode() {
+    var s = document.getElementById('sidebar');
+    var w = document.getElementById('contentWrapper');
+    var arrow = document.getElementById('toggleArrow');
+    sidebarExpanded = !sidebarExpanded;
+    if (sidebarExpanded) {
+        s.classList.add('expanded');
+        w.classList.add('sidebar-expanded');
+        arrow.textContent = '◀';
+        document.getElementById('sidebarToggle').title = '收缩菜单';
+    } else {
+        s.classList.remove('expanded');
+        w.classList.remove('sidebar-expanded');
+        arrow.textContent = '▶';
+        document.getElementById('sidebarToggle').title = '展开菜单';
+    }
+}
+</script>
+</body></html>

@@ -1,0 +1,10 @@
+{
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-17",
+            "path": "D:\\APathSoftware\\zulu17.64.15-ca-jdk17.0.18-win_x64",
+            "default": true
+        }
+    ],
+    "java.jdt.ls.java.home": "D:\\APathSoftware\\zulu17.64.15-ca-jdk17.0.18-win_x64"
+}
